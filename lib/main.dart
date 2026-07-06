@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:github_profile_viewer/Providers/first_provider.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:github_profile_viewer/Providers/dashboard_provider.dart';
 import 'package:github_profile_viewer/Screens/dashboard_screen.dart';
 import 'package:provider/provider.dart';
 
 import 'Routes/app_routes.dart';
 import 'Routes/app_routes_generator.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: ".env");
   runApp(const MyApp());
 }
 
@@ -18,7 +21,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context)=> FirstProvider()),
+        ChangeNotifierProvider(create: (context)=> DashboardProvider()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
