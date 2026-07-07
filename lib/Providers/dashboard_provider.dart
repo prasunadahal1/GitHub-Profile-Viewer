@@ -10,6 +10,23 @@ class DashboardProvider extends ChangeNotifier{
   String? _accessToken=dotenv.env['GITHUB_TOKEN'];
   String? get accessToken=>_accessToken;
 
+  String? _image ;
+  String? get image=> _image ;
+
+  String? _name;
+  String? get name=> _name;
+
+  String? _loginName;
+  String? get loginName=> _loginName;
+
+  String? _followers;
+  String? get followers=> _followers;
+
+  String? _following;
+  String? get following=> _following;
+
+  String? _value;
+  String? get value=> _value;
 
   late bool _isVisible=false;
   bool get isVisible=> _isVisible;
@@ -17,9 +34,18 @@ class DashboardProvider extends ChangeNotifier{
     _isVisible = !_isVisible;
     notifyListeners();
  }
+  void setData(String image,String name,String loginName,String followers,String following,String value){
+    _image=image;
+    _name=name;
+    _loginName=loginName;
+    _followers=followers;
+    _following=following;
+    _value=value;
+    notifyListeners();
+  }
   Future<void> getData( String keyword) async{
    try{
-     Response response=await Dio().get("https://api.github.com/search/users?q=$keyword",
+     Response response=await Dio().get("https://api.github.com/users/$keyword",
       options: Options(
         headers: {
           'Authorization':'Bearer $_accessToken',
@@ -39,11 +65,4 @@ class DashboardProvider extends ChangeNotifier{
      notifyListeners();
   }
 
- // void searchFilter(String keyword){
- //   final username = keyword.trim();
- //
- //   if (username.isEmpty) return;
- //   getData(username);
- //   notifyListeners();
- // }
 }

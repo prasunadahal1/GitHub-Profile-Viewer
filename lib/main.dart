@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:github_profile_viewer/Providers/dashboard_provider.dart';
+import 'package:github_profile_viewer/Providers/user_profile_provider.dart';
 import 'package:github_profile_viewer/Screens/dashboard_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -22,6 +23,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context)=> DashboardProvider()),
+        ChangeNotifierProvider(create: (context)=> UserProfileProvider()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
