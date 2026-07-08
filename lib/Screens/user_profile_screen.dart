@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 
 import '../Routes/app_routes.dart';
 
-
 class UserProfileScreen extends StatefulWidget {
   const UserProfileScreen({super.key});
 
@@ -27,6 +26,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     p.getRepo(provider.searchController.value.text);
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     late DashboardProvider provider = Provider.of<DashboardProvider>(
@@ -62,9 +62,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                         children: [
                           CircleAvatar(
                             radius: 40,
-                            backgroundImage: NetworkImage(
-                              provider.image?? "",
-                            ),
+                            backgroundImage: NetworkImage(provider.image ?? ""),
                           ),
                           SizedBox(width: 16),
                           Column(
@@ -89,8 +87,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           ),
                         ],
                       ),
-                      SizedBox(height: 25),
-
+                      SizedBox(height: 16),
                       Row(
                         children: [
                           Icon(
@@ -98,18 +95,22 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             size: 18,
                             color: Colors.grey,
                           ),
-                          SizedBox(width: 5),
+                          SizedBox(width: 4),
                           Text(
-                            provider.followers?? "",
+                            provider.followers ?? "",
                             style: TextStyle(
-                              fontSize: 18,
+                              fontSize: 16,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
+                          SizedBox(width: 8),
                           GestureDetector(
-                            onTap: (){
+                            onTap: () {
                               p.getFollowers(provider.value!);
-                              Navigator.pushNamed(context, Routes.followersScreen);
+                              Navigator.pushNamed(
+                                context,
+                                Routes.followersScreen,
+                              );
                             },
                             child: Text(
                               "followers",
@@ -119,15 +120,22 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                               ),
                             ),
                           ),
-                          Text(" • ", style: TextStyle(fontSize: 18)),
+                          Text(" • ", style: TextStyle(fontSize: 16)),
                           Text(
-                            provider.following?? "",
-                            style: TextStyle(fontSize: 18),
+                            provider.following ?? "",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
+                          SizedBox(width: 8),
                           GestureDetector(
-                            onTap: (){
+                            onTap: () {
                               p.getFollowing(provider.value!);
-                              Navigator.pushNamed(context, Routes.followingScreen);
+                              Navigator.pushNamed(
+                                context,
+                                Routes.followingScreen,
+                              );
                             },
                             child: Text(
                               "following",
@@ -139,11 +147,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           ),
                         ],
                       ),
-
-                      SizedBox(height: 30),
+                      SizedBox(height: 8),
                       Divider(),
-                       Padding(
-                        padding: EdgeInsets.symmetric(vertical: 12),
+                      Padding(
+                        padding: EdgeInsets.symmetric(vertical: 10,horizontal: 8),
                         child: Text(
                           "Repositories",
                           style: TextStyle(
@@ -152,91 +159,110 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           ),
                         ),
                       ),
-
-                         SizedBox(
-                           height:MediaQuery.of(context).size.height*0.2,
-                           child: ListView.builder(
-                             scrollDirection: Axis.horizontal,
-                            shrinkWrap: true,
-                            padding: EdgeInsets.symmetric(horizontal:0,),
-                            itemCount: p.repoList.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return GestureDetector(
-                                onTap: (){
-                                  Navigator.pushNamed(context, Routes.repoScreen);
-                                },
-                                child: Container(
-                                  width: MediaQuery.of(context).size.width*0.6,
-                                  margin: EdgeInsets.symmetric(horizontal: 8),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.2,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          shrinkWrap: true,
+                          padding: EdgeInsets.symmetric(horizontal: 0),
+                          itemCount: p.repoList.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.pushNamed(context, Routes.repoScreen);
+                              },
+                              child: Container(
+                                width: MediaQuery.of(context).size.width * 0.7,
+                                margin: EdgeInsets.symmetric(horizontal: 8),
+                                padding: EdgeInsets.symmetric(horizontal: 16,vertical: 16),
+                                decoration: BoxDecoration(
                                   color: Colors.white,
-                                 child: Column(
-                                   crossAxisAlignment: .start,
-                                   children: [
-                                     Row(
-                                       children: [
-                                         CircleAvatar(backgroundImage: NetworkImage( provider.image?? "",),
-                                         ),
-                                         SizedBox(width:7),
-                                         Text(  provider.loginName ?? "",
-                                           style: TextStyle(
-                                             fontSize: 20,
-                                             fontWeight: FontWeight.w400,
-                                             color: Colors.grey.shade700,
-                                           ),
-                                         ),
-                                       ],
-                                     ),
-                                       SizedBox(height:5),
-                                       Text(p.repoList[index]['name'] ?? "no name of repo",
-                                     style: TextStyle(
-                                       fontWeight: FontWeight.w500,
-                                      color: Colors.black,),
-                                       ),
-                                     SizedBox(height:5),
-                                     Text(p.repoList[index]['description']??"no description",
-                                       style: TextStyle(
-                                         color: Colors.grey.shade700,
-                                       ),
-                                     ),
-                                     Row(
-                                       children: [
-                                         Icon(Icons.star,color:Colors.amber.shade700,),
-                                         SizedBox(width: 5),
-                                         Text(p.repoList[index]['stargazers_count'].toString(),
-                                           style: TextStyle(
-                                             color: Colors.grey.shade700,
-                                           ),
-                                         ),
-                                         SizedBox(width: 15),
-                                         Container(
-                                           width: 12,
-                                           height: 12,
-                                           decoration: BoxDecoration(
-                                              color: Colors.blue,
-                                             shape: BoxShape.circle,
-                                           ),
-                                         ),
-                                         SizedBox(width:8),
-                                         Text(p.repoList[index]['language']??"",
-                                           style: TextStyle(
-                                             color: Colors.grey.shade700,
-                                           ),
-                                         ),
-                                       ],
-                                     )
-                                   ],
-                                 ),
-
+                                  borderRadius: BorderRadius.circular(16),
+                                  border: Border.all(color: Colors.grey.shade400,width: 1)
                                 ),
-                              );
-                            },
-                           ),
-                         ),
-
+                                child: Column(
+                                  crossAxisAlignment: .start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        CircleAvatar(
+                                          backgroundImage: NetworkImage(
+                                            provider.image ?? "",
+                                          ),
+                                        ),
+                                        SizedBox(width: 16),
+                                        Text(
+                                          provider.loginName ?? "",
+                                          style: TextStyle(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.w400,
+                                            color: Colors.grey.shade700,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(height: 16),
+                                    Text(
+                                      p.repoList[index]['name'] ??
+                                          "no name of repo",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                    SizedBox(height: 5),
+                                    Text(
+                                      p.repoList[index]['description'] ??
+                                          "no description",
+                                      style: TextStyle(
+                                        color: Colors.grey.shade700,
+                                      ),
+                                    ),
+                                    SizedBox(height: 5),
+                                    Row(
+                                      children: [
+                                        Icon(
+                                          Icons.star,
+                                          color: Colors.amber.shade700,
+                                        ),
+                                        SizedBox(width: 5),
+                                        Text(
+                                          p.repoList[index]['stargazers_count']
+                                              .toString(),
+                                          style: TextStyle(
+                                            color: Colors.grey.shade700,
+                                          ),
+                                        ),
+                                        SizedBox(width: 15),
+                                        Container(
+                                          width: 12,
+                                          height: 12,
+                                          decoration: BoxDecoration(
+                                            color: Colors.blue,
+                                            shape: BoxShape.circle,
+                                          ),
+                                        ),
+                                        SizedBox(width: 8),
+                                        Text(
+                                          p.repoList[index]['language'] ?? "",
+                                          style: TextStyle(
+                                            color: Colors.grey.shade700,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                      SizedBox(height: 16,),
                       ListTile(
                         onTap: () {},
                         leading: Container(
-                          padding: EdgeInsets.all(8),
+                          padding: EdgeInsets.symmetric(vertical: 4,horizontal: 4),
                           decoration: BoxDecoration(
                             color: Colors.grey.shade800,
                             borderRadius: BorderRadius.circular(6),
@@ -253,7 +279,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                         ),
                       ),
                       Divider(),
-
                       ListTile(
                         leading: Container(
                           padding: EdgeInsets.all(8),
@@ -307,6 +332,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     );
   }
 }
+
 // child: ListTile(
 // leading: CircleAvatar(
 // backgroundImage: NetworkImage('https://img.magnific.com/premium-vector/default-avatar-profile-icon-social-media-user-image-gray-avatar-icon-blank-profile-silhouette-vector-illustration_561158-3467.jpg?semt=ais_hybrid&w=740&q=80'
