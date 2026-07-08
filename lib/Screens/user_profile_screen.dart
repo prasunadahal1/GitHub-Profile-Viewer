@@ -43,7 +43,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 elevation: 0,
                 floating: true,
                 pinned: true,
+                centerTitle: true,
                 leading: BackButton(color: Colors.black),
+                title: Text('Profile',style: TextStyle(fontWeight: FontWeight.bold),),
                 actions: [
                   Icon(Icons.share_outlined, color: Colors.blue),
                   SizedBox(width: 10),
