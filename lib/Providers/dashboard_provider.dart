@@ -7,6 +7,9 @@ class DashboardProvider extends ChangeNotifier{
   Map<String,dynamic> _user={};
   Map<String,dynamic> get user=>_user;
 
+  TextEditingController _searchController = TextEditingController();
+  TextEditingController get searchController => _searchController;
+
   String? _accessToken=dotenv.env['GITHUB_TOKEN'];
   String? get accessToken=>_accessToken;
 

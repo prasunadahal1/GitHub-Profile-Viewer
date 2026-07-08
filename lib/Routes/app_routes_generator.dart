@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:github_profile_viewer/Screens/followers_screen.dart';
 import 'package:github_profile_viewer/Screens/following_screen.dart';
+import 'package:github_profile_viewer/Screens/repo_screen.dart';
 import 'app_routes.dart';
 import '../Screens/dashboard_screen.dart';
 import '../Screens/user_profile_screen.dart';
@@ -23,6 +24,10 @@ class AppRoutesGenerator {
       case Routes.followingScreen:
         return MaterialPageRoute(
             builder: (_)=>const FollowingScreen()
+        );
+      case Routes.repoScreen:
+        return MaterialPageRoute(
+            builder: (_)=>const RepoScreen()
         );
       default:
         return MaterialPageRoute(

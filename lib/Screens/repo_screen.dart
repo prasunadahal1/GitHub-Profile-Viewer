@@ -1,0 +1,182 @@
+import 'package:flutter/material.dart';
+import 'package:github_profile_viewer/Providers/dashboard_provider.dart';
+import 'package:github_profile_viewer/Providers/user_profile_provider.dart';
+import 'package:provider/provider.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
+class RepoScreen extends StatefulWidget {
+  const RepoScreen({super.key});
+
+  @override
+  State<RepoScreen> createState() => _RepoScreenState();
+}
+
+class _RepoScreenState extends State<RepoScreen> {
+  late UserProfileProvider p = Provider.of<UserProfileProvider>(
+    context,
+    listen: false,
+  );
+  late DashboardProvider provider = Provider.of<DashboardProvider>(
+    context,
+    listen: false,
+  );
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            backgroundColor: Colors.white,
+            elevation: 0,
+            floating: true,
+            pinned: true,
+            leading: BackButton(color: Colors.black),
+            actions: [
+              Icon(Icons.add_circle_outline, color: Colors.blue),
+              SizedBox(width: 10),
+              Icon(Icons.more_vert, color: Colors.blue),
+              SizedBox(width: 10),
+            ],
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CircleAvatar(
+                        radius:15,
+                        backgroundImage: NetworkImage(
+                          provider.image?? "",
+                        ),
+                      ),
+                      Text(
+                        provider.loginName ?? "no name",
+                        style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.grey.shade700,
+                        ),
+                      ),
+                      SizedBox(width: 16),
+                    ],
+                  ),
+                  Text( "no name of repo",
+                    style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black,),
+                  ),
+                  SizedBox(height: 20),
+                  Text( "description",
+                    style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black,),
+                  ),
+                  SizedBox(height: 25),
+                  Row(
+                    children: [
+                      Icon(Icons.star_border,color: Colors.grey.shade700,),
+                      SizedBox(width: 5),
+                      Text('1',
+                        // p.repoList[index]['stargazers_count'].toString(),
+                        style: TextStyle(
+                          color: Colors.black,
+                        ),
+                      ),
+                      SizedBox(width: 3),
+                      Text('star',
+                        style: TextStyle(
+                          color: Colors.grey.shade700,
+                        ),
+                      ),
+                      SizedBox(width:18),
+                      FaIcon(FontAwesomeIcons.codeFork,color:Colors.grey.shade500,size: 20,),
+                      SizedBox(width: 5),
+                      Text('0',
+                        // p.repoList[index]['language']??"",
+                        style: TextStyle(
+                          color: Colors.black,
+                        ),
+                      ),
+                      SizedBox(width: 5),
+                      Text('forks',
+                        style: TextStyle(
+                          color: Colors.grey.shade700,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height:10),
+                  Divider(),
+                  ListTile(
+                    onTap: () {},
+                    leading: Container(
+                      padding: EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Colors.green,
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: FaIcon(FontAwesomeIcons.circleDot, color: Colors.white,),
+                    ),
+                    title: Text("Issues", style: TextStyle()),
+                    trailing: Text('2',
+                      // provider.user['public_repos'].toString(),
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.grey.shade700,
+                      ),
+                    ),
+                  ),
+                  Divider(),
+                  ListTile(
+                    leading: Container(
+                      padding: EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Colors.orange.shade700,
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: Icon(Icons.people_alt_outlined,
+                        color: Colors.white,
+                      ),
+                    ),
+                    title: Text("Contributors"),
+                    trailing: Text(
+                      "0",
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.grey.shade700,
+                      ),
+                    ),
+                  ),
+                  Divider(),
+
+                  ListTile(
+                    leading: Container(
+                      padding: EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Colors.amber.shade700,
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: FaIcon(FontAwesomeIcons.eye, color: Colors.white),
+                    ),
+                    title: Text("Watchers"),
+                    trailing: Text(
+                      "2",
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.grey.shade700,
+                      ),
+                    ),
+                  ),
+                  Divider(),
+                ],
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}

@@ -3,5 +3,6 @@ abstract class Routes{
   static const userProfileScreen="/userProfileScreen";
   static const followersScreen="/followerScreen";
   static const followingScreen="/followingScreen";
+  static const repoScreen="/repoScreen";
 
 }
