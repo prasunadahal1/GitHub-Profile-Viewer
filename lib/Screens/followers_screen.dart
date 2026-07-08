@@ -26,7 +26,7 @@ class _FollowersScreenState extends State<FollowersScreen> {
                 child: ListView.builder(
                   shrinkWrap: true,
                   padding: EdgeInsets.symmetric(horizontal:0,),
-                  physics: const NeverScrollableScrollPhysics(),
+                  physics:  NeverScrollableScrollPhysics(),
                   itemCount: provider.followersList.length,
                   itemBuilder: (BuildContext context, int index) {
                     return Container(

@@ -12,8 +12,7 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
-  TextEditingController _searchController = TextEditingController();
-  TextEditingController get searchController => _searchController;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,13 +45,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 child: Visibility(
                   visible: provider.isVisible,
                   child: TextFormField(
-                    controller: searchController,
+                    controller: provider.searchController,
                     onChanged: (value) {},
                     decoration: InputDecoration(
                       hintText: 'Search GitHub',
                       suffixIcon: IconButton(
                         onPressed: () {
-                          provider.getData(searchController.value.text);
+                          provider.getData(provider.searchController.value.text);
                         },
                         icon: Icon(Icons.search),
                       ),
@@ -126,7 +125,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     contentPadding: EdgeInsets.symmetric(horizontal: 0),
                     onTap: () {
                       provider.setData(provider.user['avatar_url']?? "", provider.user['name']?? "",
-                          provider.user['login']?? "", provider.user['followers'].toString(), provider.user['following'].toString(),searchController.value.text);
+                          provider.user['login']?? "", provider.user['followers'].toString(), provider.user['following'].toString(),provider.searchController.value.text);
                       Navigator.pushNamed(context, Routes.userProfileScreen);
                     },
                     leading: CircleAvatar(
