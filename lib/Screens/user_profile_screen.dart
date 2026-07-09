@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:github_profile_viewer/Providers/dashboard_provider.dart';
 import 'package:github_profile_viewer/Providers/user_profile_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../Routes/app_routes.dart';
 
@@ -26,7 +27,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     p.getRepo(provider.searchController.value.text);
     super.initState();
   }
-
   @override
   Widget build(BuildContext context) {
     late DashboardProvider provider = Provider.of<DashboardProvider>(
@@ -43,7 +43,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 elevation: 0,
                 floating: true,
                 pinned: true,
-                centerTitle: true,
+                centerTitle: false,
                 leading: BackButton(color: Colors.black),
                 title: Text('Profile',style: TextStyle(fontWeight: FontWeight.bold),),
                 actions: [
@@ -54,8 +54,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 ],
               ),
               SliverToBoxAdapter(
-                child: Padding(
-                  padding: EdgeInsets.all(16),
+                child: Container(
+                  color: Colors.white,
+                  padding: EdgeInsets.symmetric(vertical: 16,horizontal: 16),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -70,11 +71,17 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                provider.name ?? "no name",
-                                style: TextStyle(
-                                  fontSize: 28,
-                                  fontWeight: FontWeight.bold,
+                              GestureDetector(
+                              onTap:(){
+                               provider.getUrl();
+                               print('hi');
+                              },
+                                child: Text(
+                                  provider.name ?? "no name",
+                                  style: TextStyle(
+                                    fontSize: 28,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
                               SizedBox(height: 4),
@@ -149,19 +156,33 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           ),
                         ],
                       ),
-                      SizedBox(height: 8),
-                      Divider(),
-                      Padding(
-                        padding: EdgeInsets.symmetric(vertical: 10,horizontal: 8),
-                        child: Text(
-                          "Repositories",
-                          style: TextStyle(
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                      SizedBox(
+                    ],
+                  ),
+                ),
+              ),
+              SliverToBoxAdapter(
+                child: Container(color: Colors.white,
+                    child: Divider()),
+              ),
+              SliverToBoxAdapter(
+                child: Container(
+                  color: Colors.white,
+                  padding: EdgeInsets.symmetric(vertical:8,horizontal: 16),
+                  child: Text(
+                    "Repositories",
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+              SliverToBoxAdapter(
+                child: Container(
+                  color: Colors.white,
+                  child: Column(
+                    children: [
+                      Container(
                         height: MediaQuery.of(context).size.height * 0.2,
                         child: ListView.builder(
                           scrollDirection: Axis.horizontal,
@@ -178,9 +199,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                 margin: EdgeInsets.symmetric(horizontal: 8),
                                 padding: EdgeInsets.symmetric(horizontal: 16,vertical: 16),
                                 decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(16),
-                                  border: Border.all(color: Colors.grey.shade400,width: 1)
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(8),
+                                    border: Border.all(color: Colors.grey.shade400,width: 1)
                                 ),
                                 child: Column(
                                   crossAxisAlignment: .start,
@@ -215,7 +236,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                     SizedBox(height: 5),
                                     Text(
                                       p.repoList[index]['description'] ??
-                                          "no description",
+                                          "no description",overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
                                         color: Colors.grey.shade700,
                                       ),
@@ -240,13 +261,13 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                           width: 12,
                                           height: 12,
                                           decoration: BoxDecoration(
-                                            color: Colors.blue,
+                                            color: p.getLanguageColor(p.repoList[index]['language']),
                                             shape: BoxShape.circle,
                                           ),
                                         ),
                                         SizedBox(width: 8),
                                         Text(
-                                          p.repoList[index]['language'] ?? "",
+                                          p.repoList[index]['language'] ?? "Null",
                                           style: TextStyle(
                                             color: Colors.grey.shade700,
                                           ),
@@ -260,7 +281,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           },
                         ),
                       ),
-                      SizedBox(height: 16,),
+                      SizedBox(height:15),
                       ListTile(
                         onTap: () {},
                         leading: Container(
@@ -303,7 +324,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                         ),
                       ),
                       Divider(),
-
                       ListTile(
                         leading: Container(
                           padding: EdgeInsets.all(8),
@@ -321,8 +341,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             color: Colors.grey.shade700,
                           ),
                         ),
-                      ),
-                      Divider(),
+                      )
                     ],
                   ),
                 ),
@@ -335,24 +354,3 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   }
 }
 
-// child: ListTile(
-// leading: CircleAvatar(
-// backgroundImage: NetworkImage('https://img.magnific.com/premium-vector/default-avatar-profile-icon-social-media-user-image-gray-avatar-icon-blank-profile-silhouette-vector-illustration_561158-3467.jpg?semt=ais_hybrid&w=740&q=80'
-// // provider.followersList[index]['avatar_url'] ?? "",
-// ),
-// ),
-// title: Text('name',
-// // provider.followersList[index]['login'] ?? "no name",
-// style: TextStyle(
-// fontSize: 20,
-// fontWeight: FontWeight.w500,
-// color: Colors.black,
-// ),
-// ),
-// subtitle:Text('hi',
-// // repo["description"] ?? "No description",
-// style: TextStyle(
-// color: Colors.grey.shade700,
-// ),
-// ),
-// ),
