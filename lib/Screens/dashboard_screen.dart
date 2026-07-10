@@ -124,7 +124,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   child: ListTile(
                     contentPadding: EdgeInsets.symmetric(horizontal: 0),
                     onTap: () {
-                      provider.setData(provider.user['avatar_url']?? "", provider.user['name']?? "",
+                      provider.setData(provider.user['avatar_url']?? "", provider.user['name']?? "No name",
                           provider.user['login']?? "", provider.user['followers'].toString(), provider.user['following'].toString(),provider.searchController.value.text);
                       Navigator.pushNamed(context, Routes.userProfileScreen);
                     },
