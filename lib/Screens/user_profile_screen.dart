@@ -192,6 +192,13 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           itemBuilder: (BuildContext context, int index) {
                             return GestureDetector(
                               onTap: () {
+                                p.setRepoData(p.repoList[index]['name']??"No name",
+                                  p.repoList[index]['description']??"No description",
+                                  p.repoList[index]['stargazers_count'].toString(),
+                                  p.repoList[index]['forks_count'].toString(),
+                                  p.repoList[index]['open_issues'].toString(),
+                                  p.repoList[index]['watchers_count'].toString()
+                                );
                                 Navigator.pushNamed(context, Routes.repoScreen);
                               },
                               child: Container(
@@ -335,7 +342,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                         ),
                         title: Text("Starred"),
                         trailing: Text(
-                          "2",
+                         p.totalStarCount,
                           style: TextStyle(
                             fontSize: 16,
                             color: Colors.grey.shade700,

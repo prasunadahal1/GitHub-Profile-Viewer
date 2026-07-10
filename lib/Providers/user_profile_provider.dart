@@ -14,8 +14,33 @@ class UserProfileProvider extends ChangeNotifier{
   List<Map<String,dynamic>> _repoList=[];
   List<Map<String,dynamic>> get repoList=> _repoList;
 
+  List<Map<String,dynamic>> _contributorsList=[];
+  List<Map<String,dynamic>> get contributorsList=> _contributorsList;
+
+  String _totalStarCount = "0";
+  String get totalStarCount => _totalStarCount;
+
   String? _accessToken=dotenv.env['GITHUB_TOKEN'];
   String? get accessToken=>_accessToken;
+
+  String? _name;
+  String? get name=> _name;
+
+  String? _description;
+  String? get description=> _description;
+
+  String? _star;
+  String? get star=> _star;
+
+  String? _forks;
+  String? get forks=> _forks;
+
+  String? _issues;
+  String? get issues=> _issues;
+
+  String? _watcher;
+  String? get watcher=> _watcher;
+
 
   Color getLanguageColor(String? color){
     switch(color){
@@ -91,6 +116,17 @@ class UserProfileProvider extends ChangeNotifier{
     notifyListeners();
   }
 
+  void setRepoData(String name,String description,String star,String forks,String issues,String watcher ){
+    _name=name;
+    _description=description;
+    _star=star;
+    _forks=forks;
+    _issues=issues;
+    _watcher=watcher;
+
+    notifyListeners();
+  }
+
   Future<void> getRepo( String keyword) async{
     try{
       Response response=await Dio().get("https://api.github.com/users/$keyword/repos",
@@ -104,6 +140,36 @@ class UserProfileProvider extends ChangeNotifier{
       );
       if(response.statusCode==200 || response.statusCode==201){
         _repoList=List<Map<String, dynamic>>.from(response.data);
+        int total = 0;
+
+        for (var repo in _repoList) {
+          total += (repo['stargazers_count'] ?? 0) as int;
+        }
+
+        _totalStarCount = total.toString();
+      }else{
+        print("data not found");
+      }
+    } on DioException catch(e){
+      print('Error $e');
+    }
+    notifyListeners();
+  }
+
+  Future<void> getContributors( String keyword,String repoName) async{
+    try{
+      Response response=await Dio().get("https://api.github.com/repos/$keyword/$repoName/contributors",
+        options: Options(
+            headers: {
+              'Authorization':'Bearer $_accessToken',
+              "Accept": "application/vnd.github+json",
+              // 'Authorization':'Bearer ${dotenv.env['GITHUB_TOKEN']}',
+            }
+        ),
+      );
+      if(response.statusCode==200 || response.statusCode==201){
+        _contributorsList=List<Map<String, dynamic>>.from(response.data);
+        print(response.data);
       }else{
         print("data not found");
       }

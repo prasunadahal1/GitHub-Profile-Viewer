@@ -51,8 +51,8 @@ class DashboardProvider extends ChangeNotifier{
   Future<void> getUrl()async{
    final Uri url =Uri.parse(_user['html_url']);
 
-   if(await canLaunchUrl(url)){
-     await launchUrl(url,mode: LaunchMode.externalApplication);
+   if(await launchUrl(url)){
+     await launchUrl(url,mode: LaunchMode.inAppBrowserView);
    }else{
      throw Exception("sorry $url");
    }
