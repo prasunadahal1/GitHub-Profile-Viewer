@@ -22,8 +22,13 @@ class _RepoScreenState extends State<RepoScreen> {
   );
   @override
   void initState() {
-    p.getContributors(provider.searchController.value.text,p.name!);
     super.initState();
+    // Use the GitHub login from the API, not search field text (can be empty/wrong).
+    final owner = provider.loginName ?? provider.value ?? '';
+    final repoName = p.name ?? '';
+    if (owner.isNotEmpty && repoName.isNotEmpty) {
+      p.getContributors(owner, repoName);
+    }
   }
 
   @override

@@ -27,6 +27,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     p.getRepo(provider.searchController.value.text);
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     late DashboardProvider provider = Provider.of<DashboardProvider>(
@@ -45,7 +46,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 pinned: true,
                 centerTitle: false,
                 leading: BackButton(color: Colors.black),
-                title: Text('Profile',style: TextStyle(fontWeight: FontWeight.bold),),
+                title: Text(
+                  'Profile',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
                 actions: [
                   Icon(Icons.share_outlined, color: Colors.blue),
                   SizedBox(width: 10),
@@ -56,7 +60,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
               SliverToBoxAdapter(
                 child: Container(
                   color: Colors.white,
-                  padding: EdgeInsets.symmetric(vertical: 16,horizontal: 16),
+                  padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -72,10 +76,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               GestureDetector(
-                              onTap:(){
-                               provider.getUrl();
-                               print('hi');
-                              },
+                                onTap: () {
+                                  provider.getUrl();
+                                  print('hi');
+                                },
                                 child: Text(
                                   provider.name ?? "no name",
                                   style: TextStyle(
@@ -156,14 +160,20 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           ),
                         ],
                       ),
+                    ],
+                  ),
+                ),
+              ),
               SliverToBoxAdapter(
-                child: Container(color: Colors.white,
-                    child: Divider()),
+                child: Container(color: Colors.white, child: Divider()),
               ),
               SliverToBoxAdapter(
                 child: Container(
                   color: Colors.white,
-                  padding: EdgeInsets.symmetric(vertical:8,horizontal: 16),
+                  padding: EdgeInsets.symmetric(
+                    vertical: 8,
+                    horizontal: 16,
+                  ),
                   child: Text(
                     "Repositories",
                     style: TextStyle(
@@ -174,7 +184,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 ),
               ),
               SliverToBoxAdapter(
-                child: Container(
+                child: Material(
                   color: Colors.white,
                   child: Column(
                     children: [
@@ -188,26 +198,39 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           itemBuilder: (BuildContext context, int index) {
                             return GestureDetector(
                               onTap: () {
-                                p.setRepoData(p.repoList[index]['name']??"No name",
-                                  p.repoList[index]['description']??"No description",
-                                  p.repoList[index]['stargazers_count'].toString(),
+                                p.setRepoData(
+                                  p.repoList[index]['name'] ?? "No name",
+                                  p.repoList[index]['description'] ??
+                                      "No description",
+                                  p.repoList[index]['stargazers_count']
+                                      .toString(),
                                   p.repoList[index]['forks_count'].toString(),
                                   p.repoList[index]['open_issues'].toString(),
-                                  p.repoList[index]['watchers_count'].toString()
+                                  p.repoList[index]['watchers_count']
+                                      .toString(),
                                 );
-                                Navigator.pushNamed(context, Routes.repoScreen);
+                                Navigator.pushNamed(
+                                  context,
+                                  Routes.repoScreen,
+                                );
                               },
                               child: Container(
                                 width: MediaQuery.of(context).size.width * 0.7,
                                 margin: EdgeInsets.symmetric(horizontal: 8),
-                                padding: EdgeInsets.symmetric(horizontal: 16,vertical: 16),
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 16,
+                                ),
                                 decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(8),
-                                    border: Border.all(color: Colors.grey.shade400,width: 1)
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(
+                                    color: Colors.grey.shade400,
+                                    width: 1,
+                                  ),
                                 ),
                                 child: Column(
-                                  crossAxisAlignment: .start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Row(
                                       children: [
@@ -239,7 +262,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                     SizedBox(height: 5),
                                     Text(
                                       p.repoList[index]['description'] ??
-                                          "no description",overflow: TextOverflow.ellipsis,
+                                          "no description",
+                                      overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
                                         color: Colors.grey.shade700,
                                       ),
@@ -264,13 +288,16 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                           width: 12,
                                           height: 12,
                                           decoration: BoxDecoration(
-                                            color: p.getLanguageColor(p.repoList[index]['language']),
+                                            color: p.getLanguageColor(
+                                              p.repoList[index]['language'],
+                                            ),
                                             shape: BoxShape.circle,
                                           ),
                                         ),
                                         SizedBox(width: 8),
                                         Text(
-                                          p.repoList[index]['language'] ?? "Null",
+                                          p.repoList[index]['language'] ??
+                                              "Null",
                                           style: TextStyle(
                                             color: Colors.grey.shade700,
                                           ),
@@ -284,16 +311,22 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           },
                         ),
                       ),
-                      SizedBox(height:15),
+                      SizedBox(height: 15),
                       ListTile(
                         onTap: () {},
                         leading: Container(
-                          padding: EdgeInsets.symmetric(vertical: 4,horizontal: 4),
+                          padding: EdgeInsets.symmetric(
+                            vertical: 4,
+                            horizontal: 4,
+                          ),
                           decoration: BoxDecoration(
                             color: Colors.grey.shade800,
                             borderRadius: BorderRadius.circular(6),
                           ),
-                          child: Icon(Icons.book_outlined, color: Colors.white),
+                          child: Icon(
+                            Icons.book_outlined,
+                            color: Colors.white,
+                          ),
                         ),
                         title: Text("Repositories", style: TextStyle()),
                         trailing: Text(
@@ -334,17 +367,20 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             color: Colors.amber.shade700,
                             borderRadius: BorderRadius.circular(6),
                           ),
-                          child: Icon(Icons.star_border, color: Colors.white),
+                          child: Icon(
+                            Icons.star_border,
+                            color: Colors.white,
+                          ),
                         ),
                         title: Text("Starred"),
                         trailing: Text(
-                         p.totalStarCount,
+                          p.totalStarCount,
                           style: TextStyle(
                             fontSize: 16,
                             color: Colors.grey.shade700,
                           ),
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ),
@@ -356,4 +392,3 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     );
   }
 }
-
