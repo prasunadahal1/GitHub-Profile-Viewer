@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:github_profile_viewer/Providers/dashboard_provider.dart';
 import 'package:github_profile_viewer/Providers/user_profile_provider.dart';
+import 'package:percent_indicator/flutter_percent_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:percent_indicator/percent_indicator.dart';
 
 class RepoScreen extends StatefulWidget {
   const RepoScreen({super.key});
@@ -23,12 +25,13 @@ class _RepoScreenState extends State<RepoScreen> {
   @override
   void initState() {
     super.initState();
-    // Use the GitHub login from the API, not search field text (can be empty/wrong).
-    final owner = provider.loginName ?? provider.value ?? '';
-    final repoName = p.name ?? '';
-    if (owner.isNotEmpty && repoName.isNotEmpty) {
-      p.getContributors(owner, repoName);
-    }
+    p.getContributors(provider.loginName!, p.name!);
+    // // Use the GitHub login from the API, not search field text (can be empty/wrong).
+    // final owner = provider.loginName ?? provider.value ?? '';
+    // final repoName = p.name ?? '';
+    // if (owner.isNotEmpty && repoName.isNotEmpty) {
+    //   p.getContributors(owner, repoName);
+    // }
   }
 
   @override
@@ -199,9 +202,19 @@ class _RepoScreenState extends State<RepoScreen> {
                      ),
                      title: Text("Language"),
                    children: [
-                     LinearProgressIndicator(
-                       color: Colors.blue,
-                     )
+
+                     MultiSegmentLinearIndicator(
+                       width: MediaQuery.of(context).size.width - 40,
+                       lineHeight: 20.0,
+                       animation: true,
+                       animateFromLastPercent: true,
+                       animationDuration: 1000,
+                       curve: Curves.easeInOut,
+                       barRadius: Radius.circular(10),
+                       segments: [
+
+                       ],
+                     ),
                    ],
                  ),
                   Divider(),
