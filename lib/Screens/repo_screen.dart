@@ -22,8 +22,8 @@ class _RepoScreenState extends State<RepoScreen> {
   );
   @override
   void initState() {
-   p.getContributors(provider.searchController.value.text,p.name!);
-   super.initState();
+    p.getContributors(provider.searchController.value.text,p.name!);
+    super.initState();
   }
 
   @override
@@ -181,6 +181,24 @@ class _RepoScreenState extends State<RepoScreen> {
                       ),
                     ),
                   ),
+                  Divider(),
+                 ExpansionTile(
+                     leading: Container(
+                       padding: EdgeInsets.all(8),
+                       decoration: BoxDecoration(
+                         color: Colors.amber.shade700,
+                         borderRadius: BorderRadius.circular(6),
+                       ),
+                       // child: FaIcon(FontAwesomeIcons.language, color: Colors.white),
+                       child:(Icon(Icons.language,color: Colors.white,) ),
+                     ),
+                     title: Text("Language"),
+                   children: [
+                     LinearProgressIndicator(
+                       color: Colors.blue,
+                     )
+                   ],
+                 ),
                   Divider(),
                 ],
               ),

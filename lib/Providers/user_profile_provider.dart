@@ -17,6 +17,10 @@ class UserProfileProvider extends ChangeNotifier{
   List<Map<String,dynamic>> _contributorsList=[];
   List<Map<String,dynamic>> get contributorsList=> _contributorsList;
 
+  Map<String, dynamic> _languages = {};
+  Map<String, dynamic> get languages => _languages;
+
+
   String _totalStarCount = "0";
   String get totalStarCount => _totalStarCount;
 
@@ -69,7 +73,7 @@ class UserProfileProvider extends ChangeNotifier{
         return Color(0xff563D7C);
 
         default:return
-          Colors.black;
+          Colors.grey;
     }
   }
   
@@ -172,11 +176,38 @@ class UserProfileProvider extends ChangeNotifier{
         print(response.data);
       }else{
         print("data not found");
+        print("Owner: $keyword");
+        print("Repo : $repoName");
       }
     } on DioException catch(e){
-      print('Error $e');
+      print("Status: ${e.response?.statusCode}");
+      print("Body: ${e.response?.data}");
+      // print('Error $e');
     }
     notifyListeners();
   }
 
+  Future<void> getLanguages(String keyword, String repoName) async {
+    try {
+      Response response = await Dio().get(
+        "https://api.github.com/repos/$keyword/$repoName/languages",
+        options: Options(
+          headers: {
+            "Authorization": "Bearer $_accessToken",
+            "Accept": "application/vnd.github+json",
+            // 'Authorization':'Bearer ${dotenv.env['GITHUB_TOKEN']}',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        _languages = Map<String, dynamic>.from(response.data);
+      } else {
+          print('data not found');
+      }
+    } on DioException catch (e) {
+      print('Error $e');
+    }
+    notifyListeners();
+  }
 }
