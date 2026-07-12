@@ -160,29 +160,61 @@ class UserProfileProvider extends ChangeNotifier{
     notifyListeners();
   }
 
-  Future<void> getContributors( String keyword,String repoName) async{
-    try{
-      Response response=await Dio().get("https://api.github.com/repos/$keyword/$repoName/contributors",
-        options: Options(
-            headers: {
-              'Authorization':'Bearer $_accessToken',
-              "Accept": "application/vnd.github+json",
-              // 'Authorization':'Bearer ${dotenv.env['GITHUB_TOKEN']}',
-            }
-        ),
-      );
-      if(response.statusCode==200 || response.statusCode==201){
-        _contributorsList=List<Map<String, dynamic>>.from(response.data);
-        print(response.data);
-      }else{
-        print("data not found");
-        print("Owner: $keyword");
-        print("Repo : $repoName");
+  Future<void> getContributors(String keyword, String repoName) async {
+    try {
+      // Prefer the exact owner/repo from the already-fetched repo list so we
+      // don't build a bad URL from search text (spaces, wrong casing, etc.).
+      Map<String, dynamic>? matchedRepo;
+      for (final repo in _repoList) {
+        if (repo['name'] == repoName || repo['name'] == _name) {
+          matchedRepo = repo;
+          break;
+        }
       }
-    } on DioException catch(e){
+
+      final String owner = ((matchedRepo?['owner']?['login'] as String?) ?? keyword)
+          .trim();
+      final String repo =
+          ((matchedRepo?['name'] as String?) ?? repoName).trim();
+
+      if (owner.isEmpty || repo.isEmpty) {
+        _contributorsList = [];
+        notifyListeners();
+        return;
+      }
+
+      // Use GitHub's contributors_url when available, otherwise build the path.
+      final String url = (matchedRepo?['contributors_url'] as String?) ??
+          "https://api.github.com/repos/$owner/$repo/contributors";
+
+      final headers = <String, dynamic>{
+        "Accept": "application/vnd.github+json",
+      };
+      if (_accessToken != null && _accessToken!.isNotEmpty) {
+        headers['Authorization'] = 'Bearer $_accessToken';
+      }
+
+      Response response = await Dio().get(
+        url,
+        options: Options(headers: headers),
+      );
+
+      // Empty repos return 204 with no body.
+      if (response.statusCode == 204) {
+        _contributorsList = [];
+      } else if (response.statusCode == 200 || response.statusCode == 201) {
+        _contributorsList =
+            List<Map<String, dynamic>>.from(response.data ?? []);
+      } else {
+        _contributorsList = [];
+        print("data not found");
+        print("Owner: $owner");
+        print("Repo : $repo");
+      }
+    } on DioException catch (e) {
+      _contributorsList = [];
       print("Status: ${e.response?.statusCode}");
       print("Body: ${e.response?.data}");
-      // print('Error $e');
     }
     notifyListeners();
   }
