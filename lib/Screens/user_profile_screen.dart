@@ -156,10 +156,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           ),
                         ],
                       ),
-                    ],
-                  ),
-                ),
-              ),
               SliverToBoxAdapter(
                 child: Container(color: Colors.white,
                     child: Divider()),
