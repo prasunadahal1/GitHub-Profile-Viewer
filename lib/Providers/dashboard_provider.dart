@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class DashboardProvider extends ChangeNotifier{
   Map<String,dynamic> _user={};
@@ -33,6 +34,7 @@ class DashboardProvider extends ChangeNotifier{
 
   late bool _isVisible=false;
   bool get isVisible=> _isVisible;
+
  void visible(){
     _isVisible = !_isVisible;
     notifyListeners();
@@ -46,6 +48,18 @@ class DashboardProvider extends ChangeNotifier{
     _value=value;
     notifyListeners();
   }
+  Future<void> getUrl()async{
+   final Uri url =Uri.parse(_user['html_url']);
+
+   if(await launchUrl(url)){
+     await launchUrl(url,mode: LaunchMode.inAppBrowserView);
+   }else{
+     throw Exception("sorry $url");
+   }
+   print("object");
+   notifyListeners();
+  }
+
   Future<void> getData( String keyword) async{
    try{
      Response response=await Dio().get("https://api.github.com/users/$keyword",

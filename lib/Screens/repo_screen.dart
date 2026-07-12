@@ -21,8 +21,15 @@ class _RepoScreenState extends State<RepoScreen> {
     listen: false,
   );
   @override
+  void initState() {
+    p.getContributors(provider.searchController.value.text,p.name!);
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
@@ -31,6 +38,7 @@ class _RepoScreenState extends State<RepoScreen> {
             floating: true,
             pinned: true,
             leading: BackButton(color: Colors.black),
+            title: Text('Repository',style: TextStyle(fontWeight: FontWeight.bold),),
             actions: [
               Icon(Icons.add_circle_outline, color: Colors.blue),
               SizedBox(width: 10),
@@ -53,8 +61,9 @@ class _RepoScreenState extends State<RepoScreen> {
                           provider.image?? "",
                         ),
                       ),
+                      SizedBox(width: 5),
                       Text(
-                        provider.loginName ?? "no name",
+                        provider.loginName ?? "",
                         style: TextStyle(
                           fontSize: 20,
                           color: Colors.grey.shade700,
@@ -63,23 +72,25 @@ class _RepoScreenState extends State<RepoScreen> {
                       SizedBox(width: 16),
                     ],
                   ),
-                  Text( "no name of repo",
+                  SizedBox(height:15),
+                  Text(p.name??"",
                     style: TextStyle(
+                      fontSize: 20,
                       fontWeight: FontWeight.w500,
                       color: Colors.black,),
                   ),
-                  SizedBox(height: 20),
-                  Text( "description",
+                  SizedBox(height: 15),
+                  Text( p.description ?? "",
                     style: TextStyle(
                       fontWeight: FontWeight.w500,
-                      color: Colors.black,),
+                      color: Colors.grey.shade700),
                   ),
                   SizedBox(height: 25),
                   Row(
                     children: [
                       Icon(Icons.star_border,color: Colors.grey.shade700,),
                       SizedBox(width: 5),
-                      Text('1',
+                      Text(p.star??"",
                         // p.repoList[index]['stargazers_count'].toString(),
                         style: TextStyle(
                           color: Colors.black,
@@ -94,7 +105,7 @@ class _RepoScreenState extends State<RepoScreen> {
                       SizedBox(width:18),
                       FaIcon(FontAwesomeIcons.codeFork,color:Colors.grey.shade500,size: 20,),
                       SizedBox(width: 5),
-                      Text('0',
+                      Text(p.forks??"",
                         // p.repoList[index]['language']??"",
                         style: TextStyle(
                           color: Colors.black,
@@ -121,7 +132,7 @@ class _RepoScreenState extends State<RepoScreen> {
                       child: FaIcon(FontAwesomeIcons.circleDot, color: Colors.white,),
                     ),
                     title: Text("Issues", style: TextStyle()),
-                    trailing: Text('2',
+                    trailing: Text(p.issues??"0",
                       // provider.user['public_repos'].toString(),
                       style: TextStyle(
                         fontSize: 16,
@@ -143,7 +154,7 @@ class _RepoScreenState extends State<RepoScreen> {
                     ),
                     title: Text("Contributors"),
                     trailing: Text(
-                      "0",
+                      p.contributorsList.length.toString(),
                       style: TextStyle(
                         fontSize: 16,
                         color: Colors.grey.shade700,
@@ -163,13 +174,31 @@ class _RepoScreenState extends State<RepoScreen> {
                     ),
                     title: Text("Watchers"),
                     trailing: Text(
-                      "2",
+                      p.watcher??"0",
                       style: TextStyle(
                         fontSize: 16,
                         color: Colors.grey.shade700,
                       ),
                     ),
                   ),
+                  Divider(),
+                 ExpansionTile(
+                     leading: Container(
+                       padding: EdgeInsets.all(8),
+                       decoration: BoxDecoration(
+                         color: Colors.amber.shade700,
+                         borderRadius: BorderRadius.circular(6),
+                       ),
+                       // child: FaIcon(FontAwesomeIcons.language, color: Colors.white),
+                       child:(Icon(Icons.language,color: Colors.white,) ),
+                     ),
+                     title: Text("Language"),
+                   children: [
+                     LinearProgressIndicator(
+                       color: Colors.blue,
+                     )
+                   ],
+                 ),
                   Divider(),
                 ],
               ),
