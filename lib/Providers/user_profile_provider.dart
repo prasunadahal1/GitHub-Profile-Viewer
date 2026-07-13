@@ -263,18 +263,22 @@ class UserProfileProvider extends ChangeNotifier{
     final total = totalLanguageBytes;
     if (total == 0) return [];
 
-    // final entries = languageBytes.entries.toList()
-    //   ..sort((a, b) => (b.value as num).compareTo(a.value as num)); // biggest first
+    final entries = languageBytes.entries.toList();
+    final percents = entries
+        .map((e) => (e.value as num).toDouble() / total)
+        .toList();
 
-    return languageBytes.entries.map((e) {
-      final percent = (e.value as num).toInt() / total; // 0.0 - 1.0
+    // Float division can sum to slightly over 1.0 (e.g. 1.0000000000000002).
+    // Normalize so MultiSegmentLinearIndicator does not assert.
+    final sum = percents.fold<double>(0, (a, b) => a + b);
+    final scale = sum > 1.0 ? 1.0 / sum : 1.0;
+
+    return List.generate(entries.length, (i) {
       return SegmentLinearIndicator(
-        percent: percent,
-        color: getLanguageColor(e.key),
+        percent: percents[i] * scale,
+        color: getLanguageColor(entries[i].key),
       );
-
-    }
-    ).toList();
+    });
   }
 
 }

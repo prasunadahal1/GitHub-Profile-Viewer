@@ -219,134 +219,84 @@ class _RepoScreenState extends State<RepoScreen> {
                      ),
                      title: Text("Languages"),
                    children: [
-                     ClipRRect(
-                       borderRadius: BorderRadius.circular(10),
-                       child: MultiSegmentLinearIndicator(
-                         width: MediaQuery.of(context).size.width - 68,
-                         lineHeight: 14.0,
-                         animation: true,
-                         animateFromLastPercent: true,
-                         animationDuration: 1000,
-                         curve: Curves.easeInOut,
-                         barRadius: Radius.circular(10),
-                         segments:p.buildSegments(p.languages),
+                     // FIX: MultiSegmentLinearIndicator crashes (RangeError) when
+                     // segments is empty — e.g. before getLanguages finishes or
+                     // after clearLanguage(). Only build it when data exists.
+                     if (p.languages.isEmpty)
+                       Padding(
+                         padding: const EdgeInsets.all(16.0),
+                         child: Center(child: CircularProgressIndicator()),
+                       )
+                     else ...[
+                       ClipRRect(
+                         borderRadius: BorderRadius.circular(10),
+                         child: MultiSegmentLinearIndicator(
+                           // FIX: key forces a fresh animation state when segment
+                           // count changes (avoids animateFromLastPercent RangeError)
+                           key: ValueKey(p.languages.keys.join(',')),
+                           width: MediaQuery.of(context).size.width - 68,
+                           lineHeight: 14.0,
+                           animation: true,
+                           animateFromLastPercent: true,
+                           animationDuration: 1000,
+                           curve: Curves.easeInOut,
+                           barRadius: Radius.circular(10),
+                           segments: p.buildSegments(p.languages),
+                         ),
                        ),
-                     ),
-                     SizedBox(height: 16,),
-                     Wrap(
-                       spacing: 16,
-                       runSpacing: 8,
-                       children: p.languages.entries.map((e) {
-                         final percentText =
-                         ((e.value as num).toInt() / p.totalLanguageBytes * 100).toStringAsFixed(1);
-                         return Container(
-                           padding:
-                           EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                           decoration: BoxDecoration(
-                             borderRadius: BorderRadius.circular(20),
-                           ),
-                           child: Row(
-                             mainAxisSize: MainAxisSize.min,
-                             children: [
-                               Container(
-                                 width: 10,
-                                 height: 10,
-                                 decoration: BoxDecoration(
-                                   color: p.getLanguageColor(e.key),
-                                   shape: BoxShape.circle,
+                       SizedBox(height: 16,),
+                       Wrap(
+                         spacing: 16,
+                         runSpacing: 8,
+                         children: p.languages.entries.map((e) {
+                           // FIX: guard totalLanguageBytes == 0 to avoid / 0
+                           final percentText = p.totalLanguageBytes == 0
+                               ? '0.0'
+                               : ((e.value as num).toInt() /
+                                       p.totalLanguageBytes *
+                                       100)
+                                   .toStringAsFixed(1);
+                           return Container(
+                             padding:
+                             EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                             decoration: BoxDecoration(
+                               borderRadius: BorderRadius.circular(20),
+                             ),
+                             child: Row(
+                               mainAxisSize: MainAxisSize.min,
+                               children: [
+                                 Container(
+                                   width: 10,
+                                   height: 10,
+                                   decoration: BoxDecoration(
+                                     color: p.getLanguageColor(e.key),
+                                     shape: BoxShape.circle,
+                                   ),
                                  ),
-                               ),
-                               SizedBox(width: 6),
-                               Text(
-                                 e.key,
-                                 style:  TextStyle(
-                                   fontSize: 13,
-                                   fontWeight: FontWeight.w500,
-                                   color: Colors.black87,
+                                 SizedBox(width: 6),
+                                 Text(
+                                   e.key,
+                                   style:  TextStyle(
+                                     fontSize: 13,
+                                     fontWeight: FontWeight.w500,
+                                     color: Colors.black87,
+                                   ),
                                  ),
-                               ),
-                               SizedBox(width: 4),
-                               Text(
-                                 '$percentText%',
-                                 style: TextStyle(
-                                   fontSize: 13,
-                                   fontWeight: FontWeight.w400,
-                                   color: Colors.grey.shade600,
+                                 SizedBox(width: 4),
+                                 Text(
+                                   '$percentText%',
+                                   style: TextStyle(
+                                     fontSize: 13,
+                                     fontWeight: FontWeight.w400,
+                                     color: Colors.grey.shade600,
+                                   ),
                                  ),
-                               ),
-                               // Text('${e.key} $percentText%'),
-                             ],
-                           ),
-                         );
-                       }).toList(),
-                     )
-                     // if (p.languages.isEmpty)
-                     //   Padding(
-                     //     padding: const EdgeInsets.all(16.0),
-                     //     child: Center(child: CircularProgressIndicator()),
-                     //   )else...[
-                     //   ClipRRect(
-                     //     borderRadius: BorderRadius.circular(10),
-                     //     child: MultiSegmentLinearIndicator(
-                     //       width: MediaQuery.of(context).size.width - 68,
-                     //       lineHeight: 14.0,
-                     //       animation: true,
-                     //       animateFromLastPercent: true,
-                     //       animationDuration: 1000,
-                     //       curve: Curves.easeInOut,
-                     //       barRadius: Radius.circular(10),
-                     //       segments:p.buildSegments(p.languages),
-                     //     ),
-                     //   ),
-                     //   SizedBox(height: 16,),
-                     //   Wrap(
-                     //     spacing: 16,
-                     //     runSpacing: 8,
-                     //     children: p.languages.entries.map((e) {
-                     //       final percentText =
-                     //       ((e.value as num).toInt() / p.totalLanguageBytes * 100).toStringAsFixed(1);
-                     //       return Container(
-                     //         padding:
-                     //         EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                     //         decoration: BoxDecoration(
-                     //           borderRadius: BorderRadius.circular(20),
-                     //         ),
-                     //         child: Row(
-                     //           mainAxisSize: MainAxisSize.min,
-                     //           children: [
-                     //             Container(
-                     //               width: 10,
-                     //               height: 10,
-                     //               decoration: BoxDecoration(
-                     //                 color: p.getLanguageColor(e.key),
-                     //                 shape: BoxShape.circle,
-                     //               ),
-                     //             ),
-                     //             SizedBox(width: 6),
-                     //             Text(
-                     //               e.key,
-                     //               style:  TextStyle(
-                     //                 fontSize: 13,
-                     //                 fontWeight: FontWeight.w500,
-                     //                 color: Colors.black87,
-                     //               ),
-                     //             ),
-                     //             SizedBox(width: 4),
-                     //             Text(
-                     //               '$percentText%',
-                     //               style: TextStyle(
-                     //                 fontSize: 13,
-                     //                 fontWeight: FontWeight.w400,
-                     //                 color: Colors.grey.shade600,
-                     //               ),
-                     //             ),
-                     //             // Text('${e.key} $percentText%'),
-                     //           ],
-                     //         ),
-                     //       );
-                     //     }).toList(),
-                     //   )
-
+                               ],
+                             ),
+                           );
+                         }).toList(),
+                       ),
+                     ],
                    ],
                  ),
                   Divider(),
