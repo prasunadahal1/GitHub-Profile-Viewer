@@ -87,21 +87,27 @@ class _RepoScreenState extends State<RepoScreen> {
                       ),
                       SizedBox(width: 5),
                       Text(
-                        provider.loginName ?? "",
-                        style: TextStyle(
-                          fontSize: 20,
-                          color: Colors.grey.shade700,
+                          provider.loginName ?? "",
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: Colors.grey.shade700,
+                          ),
                         ),
-                      ),
                       SizedBox(width: 16),
                     ],
                   ),
                   SizedBox(height:15),
-                  Text(p.name??"",
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.black,),
+                  GestureDetector(
+                    onTap: (){
+                      p.getRepoUrl();
+                      print('hi');
+                    },
+                    child: Text(p.name??"",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.black,),
+                    ),
                   ),
                   SizedBox(height: 15),
                   Text( p.description ?? "",
@@ -214,7 +220,6 @@ class _RepoScreenState extends State<RepoScreen> {
                          color: Colors.amber.shade700,
                          borderRadius: BorderRadius.circular(6),
                        ),
-                       // child: FaIcon(FontAwesomeIcons.language, color: Colors.white),
                        child:(Icon(Icons.language,color: Colors.white)),
                      ),
                      title: Text("Languages"),
@@ -233,7 +238,7 @@ class _RepoScreenState extends State<RepoScreen> {
                          child: MultiSegmentLinearIndicator(
                            // FIX: key forces a fresh animation state when segment
                            // count changes (avoids animateFromLastPercent RangeError)
-                           key: ValueKey(p.languages.keys.join(',')),
+                           // key: ValueKey(p.languages.keys.join(',')),
                            width: MediaQuery.of(context).size.width - 68,
                            lineHeight: 14.0,
                            animation: true,
