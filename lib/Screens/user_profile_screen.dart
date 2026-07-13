@@ -81,7 +81,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                               GestureDetector(
                                 onTap: () {
                                   provider.getUrl();
-                                  print('hi');
                                 },
                                 child: Text(
                                   provider.name ?? "no name",
@@ -211,6 +210,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                   p.repoList[index]['open_issues'].toString(),
                                   p.repoList[index]['watchers_count']
                                       .toString(),
+                                  p.repoList[index]['html_url'],
                                 );
                                 Navigator.pushNamed(
                                   context,

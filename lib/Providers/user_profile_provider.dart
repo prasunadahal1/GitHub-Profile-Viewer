@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:percent_indicator/multi_segment_linear_indicator.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 
 class UserProfileProvider extends ChangeNotifier{
@@ -53,6 +54,8 @@ class UserProfileProvider extends ChangeNotifier{
   String? _watcher;
   String? get watcher=> _watcher;
 
+  String? _htmlUrl;
+  String? get htmlUrl=> _htmlUrl;
 
   Color getLanguageColor(String? color){
     switch(color){
@@ -79,6 +82,21 @@ class UserProfileProvider extends ChangeNotifier{
 
       case"CSS":
         return Color(0xff563D7C);
+
+      case"Rust":
+        return Colors.brown;
+
+      case"Swift":
+        return Colors.orange;
+
+      case"Kotlin":
+        return Colors.purple;
+
+      case"Ruby":
+        return Colors.redAccent;
+
+      case"C":
+        return Colors.blueAccent;
 
         default:return
           Colors.grey;
@@ -128,14 +146,25 @@ class UserProfileProvider extends ChangeNotifier{
     notifyListeners();
   }
 
-  void setRepoData(String name,String description,String star,String forks,String issues,String watcher ){
+  void setRepoData(String name,String description,String star,String forks,String issues,String watcher,String htmlUrl ){
     _name=name;
     _description=description;
     _star=star;
     _forks=forks;
     _issues=issues;
     _watcher=watcher;
+    _htmlUrl=htmlUrl;
+    notifyListeners();
+  }
 
+  Future<void> getRepoUrl()async{
+    final Uri url =Uri.parse(_htmlUrl!);
+
+    if(await launchUrl(url)){
+      await launchUrl(url,mode: LaunchMode.inAppBrowserView);
+    }else{
+      throw Exception("sorry $url");
+    }
     notifyListeners();
   }
 
@@ -228,7 +257,7 @@ class UserProfileProvider extends ChangeNotifier{
   }
 
   void clearLanguage(){
-    _languages={};//clear fetch data
+    _languages.clear();//clear fetch data
     notifyListeners();
 }
   Future<void> getLanguages(String keyword, String repoName) async {
