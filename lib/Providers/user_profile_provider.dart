@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:percent_indicator/multi_segment_linear_indicator.dart';
 import 'package:provider/provider.dart';
 
 
@@ -20,6 +21,13 @@ class UserProfileProvider extends ChangeNotifier{
   Map<String, dynamic> _languages = {};
   Map<String, dynamic> get languages => _languages;
 
+  int get totalLanguageBytes {
+    if (_languages.isEmpty) return 0;
+    return _languages.values.fold<int>(
+      0,
+          (sum, v) => sum + (v as num).toInt(),
+    );
+  }
 
   String _totalStarCount = "0";
   String get totalStarCount => _totalStarCount;
@@ -219,6 +227,10 @@ class UserProfileProvider extends ChangeNotifier{
     notifyListeners();
   }
 
+  void clearLanguage(){
+    _languages={};//clear fetch data
+    notifyListeners();
+}
   Future<void> getLanguages(String keyword, String repoName) async {
     try {
       Response response = await Dio().get(
@@ -234,6 +246,8 @@ class UserProfileProvider extends ChangeNotifier{
 
       if (response.statusCode == 200) {
         _languages = Map<String, dynamic>.from(response.data);
+        print(response.statusCode);
+        print(response.data);
       } else {
           print('data not found');
       }
@@ -242,4 +256,25 @@ class UserProfileProvider extends ChangeNotifier{
     }
     notifyListeners();
   }
+
+  List<SegmentLinearIndicator> buildSegments(Map<String, dynamic> languageBytes) {
+    if (languageBytes.isEmpty) return [];
+
+    final total = totalLanguageBytes;
+    if (total == 0) return [];
+
+    // final entries = languageBytes.entries.toList()
+    //   ..sort((a, b) => (b.value as num).compareTo(a.value as num)); // biggest first
+
+    return languageBytes.entries.map((e) {
+      final percent = (e.value as num).toInt() / total; // 0.0 - 1.0
+      return SegmentLinearIndicator(
+        percent: percent,
+        color: getLanguageColor(e.key),
+      );
+
+    }
+    ).toList();
+  }
+
 }

@@ -25,6 +25,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       listen: false,
     );
     p.getRepo(provider.searchController.value.text);
+    // p.getLanguages(provider.loginName!, p.name!);
     super.initState();
   }
 
@@ -45,7 +46,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 floating: true,
                 pinned: true,
                 centerTitle: false,
-                leading: BackButton(color: Colors.black),
+                leading:IconButton(onPressed: (){
+                  Navigator.pushNamed(context, Routes.dashboardScreen);
+                }, icon: Icon(Icons.arrow_back_ios)),
                 title: Text(
                   'Profile',
                   style: TextStyle(fontWeight: FontWeight.bold),
