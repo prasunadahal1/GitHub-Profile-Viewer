@@ -12,7 +12,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  late final DashboardProvider sessionProvider = Provider.of<DashboardProvider>(context,listen: false);
+  late final DashboardProvider provider = Provider.of<DashboardProvider>(context,listen: false);
 
   // @override
   // void dispose() {
@@ -40,7 +40,7 @@ class _LoginScreenState extends State<LoginScreen> {
               SizedBox(height: 30),
 
               TextFormField(
-                controller: sessionProvider.namecontroller,
+                controller: provider.namecontroller,
                 decoration: InputDecoration(
                   labelText: 'Name',
                   hintText: 'Enter your name',
@@ -53,7 +53,7 @@ class _LoginScreenState extends State<LoginScreen> {
               SizedBox(height: 20),
 
               TextFormField(
-                controller: sessionProvider.passwordcontroller,
+                controller: provider.passwordcontroller,
                 obscureText: true,
                 decoration: InputDecoration(
                   labelText: 'Password',
@@ -71,7 +71,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 height: 50,
                 child: ElevatedButton(
                   onPressed: () {
-                    sessionProvider.postData(sessionProvider.namecontroller.text, sessionProvider.passwordcontroller.text,context);
+                    provider.postData(provider.namecontroller.text, provider.passwordcontroller.text,context);
+
                     // final session=SessionManagement.instance;
                     // session.setSession(sessionProvider.namecontroller.text,sessionProvider.passwordcontroller.text);
                     // Navigator.push(

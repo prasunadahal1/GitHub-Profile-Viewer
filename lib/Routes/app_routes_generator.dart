@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:github_profile_viewer/Screens/followers_screen.dart';
 import 'package:github_profile_viewer/Screens/following_screen.dart';
+import 'package:github_profile_viewer/Screens/login_screen.dart';
 import 'package:github_profile_viewer/Screens/repo_screen.dart';
+import 'package:github_profile_viewer/Screens/splash_screen.dart';
 import 'app_routes.dart';
 import '../Screens/dashboard_screen.dart';
 import '../Screens/user_profile_screen.dart';
@@ -9,6 +11,10 @@ import '../Screens/user_profile_screen.dart';
 class AppRoutesGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings){
     switch(settings.name){
+      case Routes.splashScreen:
+        return MaterialPageRoute(
+            builder: (_) => SplashScreen()
+        );
       case Routes.dashboardScreen:
         return MaterialPageRoute(
             builder: (_)=>const DashboardScreen()
@@ -28,6 +34,10 @@ class AppRoutesGenerator {
       case Routes.repoScreen:
         return MaterialPageRoute(
             builder: (_)=>const RepoScreen()
+        );
+      case Routes.loginScreen:
+        return MaterialPageRoute(
+            builder: (_)=>const LoginScreen()
         );
       default:
         return MaterialPageRoute(

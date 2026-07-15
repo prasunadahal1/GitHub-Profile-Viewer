@@ -6,6 +6,8 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
+import '../Routes/app_routes.dart';
+
 class DashboardProvider extends ChangeNotifier{
   static const _storage=FlutterSecureStorage();
 
@@ -117,10 +119,7 @@ class DashboardProvider extends ChangeNotifier{
       await setSession(_Token!);
       await setRefreshSession(_refreshToken!);
       if (context.mounted) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => MainScreen()),
-        );
+        Navigator.pushNamed(context, Routes.dashboardScreen);
       }
     }
   } on DioException catch(e){
@@ -129,23 +128,34 @@ class DashboardProvider extends ChangeNotifier{
     notifyListeners();
   }
 
-  Future<void> refreshSession(BuildContext context)async{
-   try{
-     Response response =await DioClient.dio.post("/auth/refresh",
-     data: {
-       'refreshToken': _refreshToken,
-       'expiresInMins': 30,
-     },
-     );
-     if (response.statusCode == 200 || response.statusCode == 201) {
-       Navigator.push(
-           context, MaterialPageRoute(builder: (context) => MainScreen()));
-     }
-   } on DioException catch(e){
-     print('Error $e');
-   }
-   notifyListeners();
+  Future<void> getCurrentUser()async{
+    Response response=await DioClient.dio.get("/auth/me");
+    if(response.statusCode==200 || response.statusCode==201){
+      final data =response.data;
+      _data=data;
+      notifyListeners();
+    }else{
+      await clearSession();
+    }
   }
+
+  // Future<void> refreshSession(BuildContext context)async{
+  //  try{
+  //    Response response =await DioClient.dio.post("/auth/refresh",
+  //    data: {
+  //      'refreshToken': _refreshToken,
+  //      'expiresInMins': 30,
+  //    },
+  //    );
+  //    if (response.statusCode == 200 || response.statusCode == 201) {
+  //      Navigator.push(
+  //          context, MaterialPageRoute(builder: (context) => MainScreen()));
+  //    }
+  //  } on DioException catch(e){
+  //    print('Error $e');
+  //  }
+  //  notifyListeners();
+  // }
 
   Future<void> setSession(String token) async {
     await _storage.write(key: "accessToken", value: token);
@@ -178,5 +188,6 @@ class DashboardProvider extends ChangeNotifier{
     ]);
     notifyListeners();
   }
+
 
 }
