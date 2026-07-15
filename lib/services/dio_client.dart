@@ -1,5 +1,6 @@
  import 'package:flutter/material.dart';
  import 'package:dio/dio.dart';
+import 'package:github_profile_viewer/services/auth_interceptors.dart';
 
  class DioClient {
    static final Dio dio = Dio(
@@ -11,5 +12,5 @@
          "Content-Type": "application/json",
        },
      ),
-   );
+   )..interceptors.add(AuthInterceptors());
  }
