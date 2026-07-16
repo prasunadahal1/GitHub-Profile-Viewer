@@ -5,11 +5,15 @@ import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../Routes/app_routes.dart';
 
 class DashboardProvider extends ChangeNotifier{
   static const _storage=FlutterSecureStorage();
+  DashboardProvider(){
+    loadRecentSearch();
+  }
 
   TextEditingController _namecontroller = TextEditingController();
   TextEditingController get namecontroller => _namecontroller;
@@ -19,6 +23,9 @@ class DashboardProvider extends ChangeNotifier{
 
   Map<String,dynamic> _user={};
   Map<String,dynamic> get user=>_user;
+
+  List<String> _recentUserList=[];
+  List<String> get recentUserList=>_recentUserList;
 
   Map<String, dynamic> _data = {};
   Map<String, dynamic> get data => _data;
@@ -60,6 +67,12 @@ class DashboardProvider extends ChangeNotifier{
     _isVisible = !_isVisible;
     notifyListeners();
  }
+
+ void getName(int index){
+   _searchController.text=_recentUserList[index];
+  notifyListeners();
+ }
+
   void setData(String image,String name,String loginName,String followers,String following,String value){
     _image=image;
     _name=name;
@@ -69,6 +82,7 @@ class DashboardProvider extends ChangeNotifier{
     _value=value;
     notifyListeners();
   }
+
   Future<void> getUrl()async{
    final Uri url =Uri.parse(_user['html_url']);
 
@@ -94,6 +108,7 @@ class DashboardProvider extends ChangeNotifier{
      );
      if(response.statusCode==200 || response.statusCode==201){
        _user=response.data;
+       // await saveRecentSearch(_user["login"]);
      }else{
        print("data not found");
      }
@@ -101,6 +116,31 @@ class DashboardProvider extends ChangeNotifier{
    print('Error $e');
    }
      notifyListeners();
+  }
+
+  Future<void> loadRecentSearch() async{
+   final prefs= await SharedPreferences.getInstance();
+   _recentUserList= prefs.getStringList("Search History")?? [];
+   notifyListeners();
+  }
+
+  Future<void>saveRecentSearch(String username)async{
+  final prefs= await SharedPreferences.getInstance();
+
+  _recentUserList.remove(username);//removes duplicates
+  _recentUserList.insert(0,username);//add latest search at the top
+    if(_recentUserList.length>10){  //keeps only last 10 searches
+      _recentUserList.removeLast();  //removes form the last
+    }
+    await prefs.setStringList("search_history", _recentUserList);
+    notifyListeners();
+  }
+
+  Future<void> clearRecentSearch()async{
+   final prefs=await SharedPreferences.getInstance();
+   await prefs.remove("search_history");
+   _recentUserList.clear();
+   notifyListeners();
   }
 
   Future<void> postData(String username,String password,BuildContext context)async{
@@ -137,6 +177,7 @@ class DashboardProvider extends ChangeNotifier{
     }else{
       await clearSession();
     }
+    notifyListeners();
   }
 
   // Future<void> refreshSession(BuildContext context)async{
