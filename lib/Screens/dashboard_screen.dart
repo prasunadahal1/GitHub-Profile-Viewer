@@ -69,6 +69,23 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ),
               ),
               SliverToBoxAdapter(child: SizedBox(height: 20)),
+              SliverToBoxAdapter(
+                child: Container(
+                  margin: EdgeInsets.symmetric(horizontal: 16),
+                  child: Column(
+                    crossAxisAlignment: .start,
+                    children: [
+                      Text(
+                        'People',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
               if (provider.user.isEmpty)
                 SliverToBoxAdapter(
                   child: Container(
@@ -77,13 +94,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       crossAxisAlignment: .start,
                       spacing: 5,
                       children: [
-                        Text(
-                          'People',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
                         Container(
                           height: MediaQuery.of(context).size.height * 0.1,
                           child: Center(
@@ -122,10 +132,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
               else
                 SliverToBoxAdapter(
                   child: ListTile(
-                    contentPadding: EdgeInsets.symmetric(horizontal: 0),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 10),
                     onTap: () {
                       provider.setData(provider.user['avatar_url']?? "", provider.user['name']?? "No name",
                           provider.user['login']?? "", provider.user['followers'].toString(), provider.user['following'].toString(),provider.searchController.value.text);
+
+                      provider.saveRecentSearch(provider.user["login"]);
+                      print('search');
                       Navigator.pushNamed(context, Routes.userProfileScreen);
                     },
                     leading: CircleAvatar(
@@ -151,6 +164,53 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ),
                   ),
                 ),
+
+              SliverToBoxAdapter(child: SizedBox(height: 20)),
+
+              SliverToBoxAdapter(
+                child: Container(
+                  margin: EdgeInsets.symmetric(horizontal: 16),
+                  child: Column(
+                    crossAxisAlignment: .start,
+                    children: [
+                      Text(
+                        'Recent Searches',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              SliverToBoxAdapter(
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  padding: EdgeInsets.symmetric(horizontal:0,),
+                  physics:  NeverScrollableScrollPhysics(),
+                  itemCount: provider.recentUserList.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Container(
+                      child: GestureDetector(
+                        onTap: (){
+                         provider.getName(index);
+                          print("hello");
+                        },
+                        child: ListTile(
+                          title: Text( provider.recentUserList[index],
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
             ],
           );
         },
