@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:github_profile_viewer/Providers/dashboard_provider.dart';
+import 'package:github_profile_viewer/Screens/splash_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../Routes/app_routes.dart';
@@ -31,13 +32,46 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     icon: Icon(Icons.search, color: Colors.blue),
                   ),
                   SizedBox(width: 15),
-                  CircleAvatar(
-                    radius: 20,
-                    backgroundImage: NetworkImage(
-                      "https://img.magnific.com/premium-vector/default-avatar-profile-icon-social-media-user-image-gray-avatar-icon-blank-profile-silhouette-vector-illustration_561158-3467.jpg?semt=ais_hybrid&w=740&q=80",
-                    ),
-                  ),
-                  SizedBox(width: 25),
+                  PopupMenuButton<String>(
+                    onSelected: (value)async{
+                      if(value=="logout"){
+                        await provider.clearSession();
+                        print("logout");
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(builder: (context) => SplashScreen()),
+                              (route) => false,
+                        );
+                       // Navigator.pushNamed(context, Routes.splashScreen);
+                       print("screen");
+                      }
+                    },
+                    itemBuilder: (context)=>[
+                      PopupMenuItem(
+                        value: "logout",
+                          child: Row(
+                        children: [
+                          Icon(Icons.logout, color: Colors.blue),
+                          SizedBox(width: 10),
+                          Text("Logout"),
+                        ],
+                      )
+                      )
+                    ],
+                      child: Icon(Icons.more_vert, color: Colors.blue)),
+                  // PopupMenuButton(
+                  //   itemBuilder: (context)=>[
+                  //     PopupMenuItem(
+                  //         child: Text('Logout'))
+                  //   ],
+                  //   child: CircleAvatar(
+                  //     radius: 20,
+                  //     backgroundImage: NetworkImage(
+                  //       "https://img.magnific.com/premium-vector/default-avatar-profile-icon-social-media-user-image-gray-avatar-icon-blank-profile-silhouette-vector-illustration_561158-3467.jpg?semt=ais_hybrid&w=740&q=80",
+                  //     ),
+                  //   ),
+                  // ),
+                  SizedBox(width:15),
                 ],
               ),
               SliverToBoxAdapter(child: SizedBox(height: 20)),
@@ -173,15 +207,29 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   child: Column(
                     crossAxisAlignment: .start,
                     children: [
-                      Text(
-                        'Recent Searches',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                      Row(
+                        mainAxisAlignment: .spaceBetween,
+                        children: [
+                          Text(
+                            'Recent Searches',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              provider.clearRecentSearch();
+                            },
+                            child: Text("Clear",style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold,color: Colors.black)),
+                          ),
+                        ],
+                      )
+
                     ],
                   ),
+
                 ),
               ),
               SliverToBoxAdapter(

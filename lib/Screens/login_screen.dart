@@ -72,7 +72,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: ElevatedButton(
                   onPressed: () {
                     provider.postData(provider.namecontroller.text, provider.passwordcontroller.text,context);
-
                     // final session=SessionManagement.instance;
                     // session.setSession(sessionProvider.namecontroller.text,sessionProvider.passwordcontroller.text);
                     // Navigator.push(
