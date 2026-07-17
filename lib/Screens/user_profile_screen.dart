@@ -83,7 +83,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                   provider.getUrl();
                                 },
                                 child: Text(
-                                  provider.name ?? "no name",
+                                  provider.name ?? "no name",overflow:TextOverflow.ellipsis ,
                                   style: TextStyle(
                                     fontSize: 28,
                                     fontWeight: FontWeight.bold,
