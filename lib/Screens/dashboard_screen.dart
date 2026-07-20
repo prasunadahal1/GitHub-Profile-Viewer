@@ -22,6 +22,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           return CustomScrollView(
             slivers: [
               SliverAppBar(
+                automaticallyImplyLeading: false,
                 backgroundColor: Colors.white,
                 title: Text('Welcome'),
                 actions: [
