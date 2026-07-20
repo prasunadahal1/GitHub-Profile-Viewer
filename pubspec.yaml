@@ -42,6 +42,7 @@ dependencies:
   percent_indicator: ^4.2.5
   flutter_secure_storage: ^10.3.1
   shared_preferences: ^2.5.5
+  number_pagination: ^1.1.6
 
 dev_dependencies:
   flutter_test:

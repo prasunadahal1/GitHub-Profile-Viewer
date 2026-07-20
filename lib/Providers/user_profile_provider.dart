@@ -4,6 +4,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:percent_indicator/multi_segment_linear_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:number_pagination/number_pagination.dart';
 
 
 class UserProfileProvider extends ChangeNotifier{
@@ -56,6 +57,12 @@ class UserProfileProvider extends ChangeNotifier{
 
   String? _htmlUrl;
   String? get htmlUrl=> _htmlUrl;
+
+  bool _isloading=false;
+  bool get isloading => _isloading;
+
+  int _page=1;
+  final int _limit=1;
 
   Color getLanguageColor(String? color){
     switch(color){
@@ -168,9 +175,9 @@ class UserProfileProvider extends ChangeNotifier{
     notifyListeners();
   }
 
-  Future<void> getRepo( String keyword) async{
+  getRepo( String keyword,int page,int limit) async{
     try{
-      Response response=await Dio().get("https://api.github.com/users/$keyword/repos",
+      Response response=await Dio().get("https://api.github.com/users/$keyword/repos?_page=$page&_limit=$limit",
         options: Options(
             headers: {
               'Authorization':'Bearer $_accessToken',
@@ -196,6 +203,24 @@ class UserProfileProvider extends ChangeNotifier{
     }
     notifyListeners();
   }
+
+Future<void> getPage(String keyword)async{
+    _isloading=true;
+    notifyListeners();
+    try{
+      _repoList=await getRepo(keyword, _page, _limit);
+      if (repoList.isEmpty){
+      }else {
+        repoList.addAll(repoList);
+        _page++;
+      }
+    }catch(e){
+      print("error:$e");
+    }finally{
+      _isloading=false;
+      notifyListeners();
+    }
+}
 
   Future<void> getContributors(String keyword, String repoName) async {
     try {
