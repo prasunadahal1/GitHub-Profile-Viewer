@@ -4,13 +4,17 @@ import 'package:github_profile_viewer/Providers/dashboard_provider.dart';
 import 'package:github_profile_viewer/Providers/user_profile_provider.dart';
 import 'package:github_profile_viewer/Screens/dashboard_screen.dart';
 import 'package:provider/provider.dart';
-
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'Routes/app_routes.dart';
 import 'Routes/app_routes_generator.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env");
+  await Supabase.initialize(
+      url:dotenv.env['SUPABASE_URL']!,
+      anonKey:dotenv.env['SUPABASE_ANON_KEY']!
+  );
   runApp(const MyApp());
 }
 

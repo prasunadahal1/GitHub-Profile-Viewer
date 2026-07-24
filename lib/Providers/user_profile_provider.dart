@@ -58,11 +58,17 @@ class UserProfileProvider extends ChangeNotifier{
   String? _htmlUrl;
   String? get htmlUrl=> _htmlUrl;
 
-  bool _isloading=false;
-  bool get isloading => _isloading;
+  bool _isLoading = false;
+  bool get isLoading => _isLoading;
 
-  int _page=1;
-  final int _limit=1;
+  int _currentPage=1;
+  int get currentPage=>_currentPage;
+
+  final int _perPage=1;
+  int get perPage=>_perPage;
+
+  int _totalPages = 1;
+  int get totalPages => _totalPages;
 
   Color getLanguageColor(String? color){
     switch(color){
@@ -175,9 +181,9 @@ class UserProfileProvider extends ChangeNotifier{
     notifyListeners();
   }
 
-  getRepo( String keyword,int page,int limit) async{
+  getRepo( String keyword) async{
     try{
-      Response response=await Dio().get("https://api.github.com/users/$keyword/repos?_page=$page&_limit=$limit",
+      Response response=await Dio().get("https://api.github.com/users/$keyword/repos?page=$_currentPage&per_page=$_perPage",
         options: Options(
             headers: {
               'Authorization':'Bearer $_accessToken',
@@ -204,23 +210,38 @@ class UserProfileProvider extends ChangeNotifier{
     notifyListeners();
   }
 
-Future<void> getPage(String keyword)async{
-    _isloading=true;
-    notifyListeners();
-    try{
-      _repoList=await getRepo(keyword, _page, _limit);
-      if (repoList.isEmpty){
-      }else {
-        repoList.addAll(repoList);
-        _page++;
-      }
-    }catch(e){
-      print("error:$e");
-    }finally{
-      _isloading=false;
-      notifyListeners();
+  void setTotalPages(int totalRepos) {
+    _totalPages = ((totalRepos) / _perPage).ceil();
+
+    if (_totalPages == 0) {
+      _totalPages = 1;
     }
-}
+    notifyListeners();
+  }
+
+  Future<void> changePage(String username, int page) async {
+    _currentPage = page;
+    await getRepo(username);
+    notifyListeners();
+  }
+
+// Future<void> getPage(String keyword)async{
+//     _isloading=true;
+//     notifyListeners();
+//     try{
+//       _repoList=await getRepo(keyword, _page, _limit);
+//       if (repoList.isEmpty){
+//       }else {
+//         repoList.addAll(repoList);
+//         _page++;
+//       }
+//     }catch(e){
+//       print("error:$e");
+//     }finally{
+//       _isloading=false;
+//       notifyListeners();
+//     }
+// }
 
   Future<void> getContributors(String keyword, String repoName) async {
     try {
