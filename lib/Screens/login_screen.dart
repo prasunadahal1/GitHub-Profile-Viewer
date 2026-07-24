@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:github_profile_viewer/Providers/dashboard_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -84,6 +85,34 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Text('Login'),
                 ),
               ),
+              SizedBox(height: 10),
+              GestureDetector(
+                onTap: (){
+                 provider.continueWithGoogle(context);
+                },
+                child: Row(
+                  mainAxisAlignment: .center,
+                  children: [
+                    Image.asset("Assets/google-logo.jpg",height: 40,width:30),
+                    SizedBox(width:5),
+                    Text('Continue with google',style: TextStyle(fontSize: 15))
+                  ],
+                ),
+              ),
+              SizedBox(height: 5),
+              GestureDetector(
+                onTap: (){
+                provider.continueWithGithub();
+                },
+                child: Row(
+                  mainAxisAlignment: .center,
+                  children: [
+                    Image.asset("Assets/git_image-removebg-preview.png",height: 40,width:30),
+                    SizedBox(width:5),
+                    Text('Continue with github',style: TextStyle(fontSize: 15))
+                  ],
+                ),
+              )
             ],
           ),
         ),

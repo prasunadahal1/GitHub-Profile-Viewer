@@ -1,13 +1,16 @@
+import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:github_profile_viewer/services/dio_client.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../Routes/app_routes.dart';
+import 'package:app_links/app_links.dart';
 
 class DashboardProvider extends ChangeNotifier{
   static const _storage=FlutterSecureStorage();
@@ -229,6 +232,56 @@ class DashboardProvider extends ChangeNotifier{
     ]);
     notifyListeners();
   }
+  static configDeepLink(BuildContext context)async{
+   final appLinks=AppLinks();
+   final initialUri = await appLinks.getInitialLink();
+   if (initialUri != null && initialUri.host == "github-login") {
+     if (context.mounted) {
+       Navigator.pushNamed(context, Routes.dashboardScreen);
+     }
+   }
+   appLinks.uriLinkStream.listen((uri){
+     if (uri.host=="github-login"){
+       if(context.mounted){
+         Navigator.pushNamed(context, Routes.dashboardScreen);
+       }
+     }
+   });
+  }
 
+  final supabase=Supabase.instance.client;
+  continueWithGoogle(BuildContext context)async{
+   try{
+     GoogleSignIn signIn=GoogleSignIn.instance;
+     await signIn.initialize(
+       serverClientId: dotenv.env['WEB_CLIENT'],
+       clientId: Platform.isAndroid? dotenv.env['ANDROID_CLIENT']:
+         dotenv.env['IOS_CLIENT']
+     );
+     GoogleSignInAccount account = await signIn.authenticate();
+     String idToken=account.authentication.idToken??"";
+     final authorization=await account.authorizationClient.authorizationForScopes(['email','profile'])?? await account.authorizationClient.authorizeScopes(['email','profile']);
 
+     final result = await supabase.auth.signInWithIdToken(
+         provider: OAuthProvider.google,
+         idToken: idToken,
+         accessToken: authorization.accessToken
+     );
+     if (result.user!= null && result.session!=null){
+       Navigator.pushNamed(context, Routes.dashboardScreen);
+     }
+   }on GoogleSignInException catch(e){
+     if (e.code == GoogleSignInExceptionCode.canceled) {
+       print("User cancelled ya reauth failed: ${e.description}");
+     }
+   }
+  }
+
+  continueWithGithub()async{
+    await supabase.auth.signInWithOAuth(
+      OAuthProvider.github,
+      redirectTo: 'code://github-login', // Optionally set the redirect link to bring back the user via deeplink.
+      authScreenLaunchMode: LaunchMode.externalApplication, // Launch the auth screen in a new webview on mobile.
+    );
+  }
 }

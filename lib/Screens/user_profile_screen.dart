@@ -17,17 +17,20 @@ class UserProfileScreen extends StatefulWidget {
 class _UserProfileScreenState extends State<UserProfileScreen> {
   @override
   void initState() {
-    late UserProfileProvider p = Provider.of<UserProfileProvider>(
-      context,
-      listen: false,
-    );
-    late DashboardProvider provider = Provider.of<DashboardProvider>(
-      context,
-      listen: false,
-    );
-    p.getRepo(provider.searchController.value.text,1,1);
-    // p.getLanguages(provider.loginName!, p.name!);
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      late UserProfileProvider p = Provider.of<UserProfileProvider>(
+        context,
+        listen: false,
+      );
+      late DashboardProvider provider = Provider.of<DashboardProvider>(
+        context,
+        listen: false,
+      );
+      p.setTotalPages(provider.user["public_repos"]);
+      p.getRepo(provider.searchController.value.text);
+      // p.getLanguages(provider.loginName!, p.name!);
+    });
   }
 
   @override
@@ -185,12 +188,20 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                       vertical: 8,
                       horizontal: 16,
                     ),
-                    child: Text(
-                      "Repositories",
-                      style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                      ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Repositories",
+                          style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(width:10),
+
+                      ],
                     ),
                   ),
                 ),
@@ -227,7 +238,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                   );
                                 },
                                 child: Container(
-                                  width: MediaQuery.of(context).size.width * 0.7,
+                                  width: MediaQuery.of(context).size.width * 0.93,
                                   margin: EdgeInsets.symmetric(horizontal: 8),
                                   padding: EdgeInsets.symmetric(
                                     horizontal: 16,
@@ -323,7 +334,31 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             },
                           ),
                         ),
-                        SizedBox(height: 15),
+                        SizedBox(height:8),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: NumberPagination(
+                            totalPages:p.totalPages,
+                            currentPage:p.currentPage,
+                            onPageChanged: (page){
+                              p.changePage(provider.loginName!, page);
+                            },
+                            visiblePagesCount: 3,
+                            fontSize: 13,
+                            controlButtonSize: Size(25, 25),
+                            numberButtonSize:  Size(40, 40),
+                            buttonElevation: 0,
+                            buttonRadius: 8,
+                            selectedButtonColor: Colors.black,
+                            unSelectedButtonColor: Colors.grey.shade100,
+                            controlButtonColor: Colors.grey.shade200,
+                            navigationButtonSpacing:0,
+                            sectionSpacing:0,
+                            betweenNumberButtonSpacing:2,
+                          ),
+                        ),
+                        SizedBox(height: 8),
+                        Divider(),
                         ListTile(
                           onTap: () {},
                           leading: Container(

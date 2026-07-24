@@ -43,6 +43,9 @@ dependencies:
   flutter_secure_storage: ^10.3.1
   shared_preferences: ^2.5.5
   number_pagination: ^1.1.6
+  supabase_flutter: ^2.16.0
+  google_sign_in: ^7.2.0
+  app_links: ^7.0.0
 
 dev_dependencies:
   flutter_test:
@@ -70,6 +73,7 @@ flutter:
   assets:
     - .env
     - Assets/git_image-removebg-preview.png
+    - Assets/google-logo.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
